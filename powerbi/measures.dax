@@ -1,0 +1,13 @@
+Applications = COUNTROWS('credit_risk')
+
+Labeled Applications = CALCULATE([Applications], 'credit_risk'[loan_status] IN {0, 1})
+
+Defaults = CALCULATE(COUNTROWS('credit_risk'), 'credit_risk'[loan_status] = 1)
+
+Default Rate % = DIVIDE([Defaults], [Labeled Applications])
+
+Average Loan Amount = AVERAGE('credit_risk'[loan_amnt])
+
+Average Interest Rate % = AVERAGE('credit_risk'[loan_int_rate]) / 100
+
+Average Loan-to-Income = AVERAGE('credit_risk'[loan_percent_income])
