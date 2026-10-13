@@ -1,13 +1,133 @@
-Applications = COUNTROWS('credit_risk')
+// ==============================================================================
+// BABY EXPLANATION OF DAX:
+// DAX (Data Analysis Expressions) is like Excel formulas on superpowers!
+// Instead of looking at a single box (like B2), DAX looks at whole columns
+// and calculates totals, averages, or answers special questions like:
+// "Count only the people who defaulted".
+// ==============================================================================
 
-Labeled Applications = CALCULATE([Applications], 'credit_risk'[loan_status] IN {0, 1})
+// ------------------------------------------------------------------------------
+// 1. TOTAL APPLICATIONS
+// Baby Explanation: "Count how many rows/people are in our credit table."
+// ------------------------------------------------------------------------------
+Applications = 
+COUNTROWS('credit_risk')
 
-Defaults = CALCULATE(COUNTROWS('credit_risk'), 'credit_risk'[loan_status] = 1)
 
-Default Rate % = DIVIDE([Defaults], [Labeled Applications])
+// ------------------------------------------------------------------------------
+// 2. LABELED APPLICATIONS (CARD 1: 32,416)
+// Baby Explanation: "Count only people who have a clear answer of 0 (paid) or 1 (defaulted)."
+// CALCULATE lets us add a filter/rule.
+// ------------------------------------------------------------------------------
+Labeled Applications = 
+CALCULATE(
+    [Applications], 
+    'credit_risk'[loan_status] IN {0, 1}
+)
 
-Average Loan Amount = AVERAGE('credit_risk'[loan_amnt])
 
-Average Interest Rate % = AVERAGE('credit_risk'[loan_int_rate]) / 100
+// ------------------------------------------------------------------------------
+// 3. TOTAL DEFAULTS (CARD 2: 7,090)
+// Baby Explanation: "Count how many borrowers failed to pay back their loan (loan_status = 1)."
+// ------------------------------------------------------------------------------
+Total Defaults = 
+CALCULATE(
+    COUNTROWS('credit_risk'), 
+    'credit_risk'[loan_status] = 1
+)
 
-Average Loan-to-Income = AVERAGE('credit_risk'[loan_percent_income])
+
+// ------------------------------------------------------------------------------
+// 4. DEFAULT RATE % (CARD 3: 21.87%)
+// Baby Explanation: "Divide the defaults by total applicants. DIVIDE prevents divide-by-zero errors."
+// Format as: 0.00% or 0.0%
+// ------------------------------------------------------------------------------
+Default Rate % = 
+DIVIDE(
+    [Total Defaults], 
+    [Labeled Applications], 
+    0
+)
+
+
+// ------------------------------------------------------------------------------
+// 5. AVERAGE LOAN AMOUNT (CARD 4: $9,594)
+// Baby Explanation: "Add up all borrowed money and divide by how many loans were taken."
+// Format as: Currency ($#,##0)
+// ------------------------------------------------------------------------------
+Average Loan Amount = 
+AVERAGE('credit_risk'[loan_amnt])
+
+
+// ------------------------------------------------------------------------------
+// 6. AVERAGE INTEREST RATE % (CARD 5: 11.02%)
+// Baby Explanation: "What was the average interest fee percentage charged?"
+// Divide by 100 so Power BI formats 11.02 as 11.02%
+// ------------------------------------------------------------------------------
+Average Interest Rate % = 
+DIVIDE(
+    AVERAGE('credit_risk'[loan_int_rate]), 
+    100, 
+    0
+)
+
+
+// ------------------------------------------------------------------------------
+// 7. AVERAGE LOAN-TO-INCOME BURDEN RATIO
+// Baby Explanation: "On average, how big was the loan compared to their annual paycheck?"
+// E.g., 0.17 means the loan was equal to 17% of their annual salary.
+// ------------------------------------------------------------------------------
+Average Loan-to-Income = 
+AVERAGE('credit_risk'[loan_percent_income])
+
+
+// ------------------------------------------------------------------------------
+// 8. MEDIAN LOAN AMOUNT
+// Baby Explanation: "The exact middle loan size if all applicants lined up from smallest to largest."
+// ------------------------------------------------------------------------------
+Median Loan Amount = 
+MEDIAN('credit_risk'[loan_amnt])
+
+
+// ------------------------------------------------------------------------------
+// 9. HIGH RISK APPLICATIONS (Grades E, F, G)
+// Baby Explanation: "How many applicants fall into the dangerous bottom grades?"
+// ------------------------------------------------------------------------------
+High Risk Applications = 
+CALCULATE(
+    [Labeled Applications], 
+    'credit_risk'[loan_grade] IN {"E", "F", "G"}
+)
+
+
+// ------------------------------------------------------------------------------
+// 10. GRADE A DEFAULT RATE %
+// Baby Explanation: "What is the default rate specifically for our safest grade A borrowers?" (9.96%)
+// ------------------------------------------------------------------------------
+Grade A Default Rate % = 
+CALCULATE(
+    [Default Rate %], 
+    'credit_risk'[loan_grade] = "A"
+)
+
+
+// ------------------------------------------------------------------------------
+// 11. RENTERS DEFAULT RATE %
+// Baby Explanation: "What is the default rate specifically for applicants who rent their home?"
+// ------------------------------------------------------------------------------
+Renters Default Rate % = 
+CALCULATE(
+    [Default Rate %], 
+    'credit_risk'[person_home_ownership] = "RENT"
+)
+
+
+// ------------------------------------------------------------------------------
+// 12. HOMEOWNERS DEFAULT RATE %
+// Baby Explanation: "What is the default rate specifically for applicants who own their house?"
+// ------------------------------------------------------------------------------
+Homeowners Default Rate % = 
+CALCULATE(
+    [Default Rate %], 
+    'credit_risk'[person_home_ownership] = "OWN"
+)

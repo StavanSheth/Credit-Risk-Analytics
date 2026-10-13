@@ -1,0 +1,13 @@
+DAX Measure,Dashboard Element,Raw Value,Formatted Output
+Applications,Total Table Rows,32416.0,"32,416"
+Labeled Applications,KPI Card 1,32416.0,"32,416"
+Total Defaults,KPI Card 2,7089.0,"7,089"
+Default Rate %,KPI Card 3,21.87,21.87%
+Average Loan Amount,KPI Card 4,9593.85,"$9,593.85"
+Average Interest Rate %,KPI Card 5,11.02,11.02%
+Median Loan Amount,Secondary Metric,8000.0,"$8,000.00"
+Average Loan-to-Income,Secondary Metric,0.1702,17.02%
+High Risk Applications (E-G),Visual Matrix,1268.0,"1,268"
+Grade A Default Rate %,Combo Chart Start,9.96,9.96%
+Renters Default Rate %,Donut Chart Segment,31.61,31.61%
+Homeowners Default Rate %,Donut Chart Segment,7.49,7.49%
